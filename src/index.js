@@ -55,7 +55,7 @@ export function createtodoToTable(todoData) {
       updateTodo(event, todoObj.id, todoData)
     );
 
-    tdbtn.appendChild(updateBtn);
+    tdbtn.appendChild(updateBtn); // <td> <button><>  <td/>
 
     const tdBtnDelete = document.createElement("td");
     const deleteBnt = document.createElement("button");
