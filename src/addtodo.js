@@ -1,4 +1,5 @@
 import { createtodoToTable } from "./index";
+import { v4 as uuidv4 } from "uuid";
 
 window.addEventListener("load", function () {
   const title = document.getElementById("title");
@@ -14,10 +15,12 @@ function handleSubmit(event) {
   let todos = JSON.parse(localStorage.getItem("todos")) || [];
   let titleValue = title.value;
   let descritionValue = descrition.value;
+  let id = uuidv4();
   let todoObj = {
+    id,
     title: titleValue,
     description: descritionValue,
-    status: "not started",
+    status: "Not started",
     date: new Date().toLocaleDateString(),
   };
   todos.push(todoObj);

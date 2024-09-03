@@ -22,7 +22,6 @@ let container;
 // ];
 
 export function createtodoToTable(todoData) {
-  console.log(todoData);
   const container = document.getElementById("container");
 
   const table = document.createElement("table");
@@ -40,10 +39,11 @@ export function createtodoToTable(todoData) {
   table.appendChild(headerRow);
 
   todoData.forEach((todoObj) => {
+    const keys = ["title", "description", "status", "date"];
     const row = document.createElement("tr");
-    Object.values(todoObj).forEach((value) => {
+    keys.forEach((key) => {
       const td = document.createElement("td");
-      td.appendChild(document.createTextNode(value));
+      td.appendChild(document.createTextNode(todoObj[key]));
 
       row.appendChild(td);
     });
@@ -51,7 +51,9 @@ export function createtodoToTable(todoData) {
     const updateBtn = document.createElement("button");
     updateBtn.appendChild(document.createTextNode("Update"));
     updateBtn.classList.add("update-btn", "btn");
-    updateBtn.addEventListener("click", updateTodo);
+    updateBtn.addEventListener("click", (event) =>
+      updateTodo(event, todoObj.id, todoData)
+    );
 
     tdbtn.appendChild(updateBtn);
 
@@ -59,16 +61,21 @@ export function createtodoToTable(todoData) {
     const deleteBnt = document.createElement("button");
     deleteBnt.innerText = "Delete";
     deleteBnt.classList.add("delete-btn", "btn");
-
     tdBtnDelete.appendChild(deleteBnt);
+
+    deleteBnt.append;
+
+    deleteBnt.addEventListener("click", (event) =>
+      deleteTodo(event, todoObj.id, todoData)
+    );
 
     row.append(tdbtn);
     row.append(tdBtnDelete);
 
     table.appendChild(row);
   });
-  console.log("stevenson", container);
-  container.appendChild(table);
+
+  container !== null && container.appendChild(table);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -77,7 +84,46 @@ window.addEventListener("DOMContentLoaded", () => {
   createtodoToTable(todos);
 });
 
-function updateTodo() {
+function updateTodo(event, id, todoArray) {
+  const row = event.target.parentNode.parentNode;
+  console.log(row);
+
   const containerUpdate = document.getElementById("container-update");
   containerUpdate.style.display = "flex";
+
+  const singleTodo = todoArray.find((todo) => todo.id == id);
+
+  document.getElementById("update-title").value = singleTodo.title;
+  document.getElementById("update-descrition").value = singleTodo.description;
+  document.getElementById("status-update").value = singleTodo.status;
+
+  const btn = document.getElementById("btn-save-update");
+  btn.addEventListener("click", () => saveUpdate(singleTodo, todoArray, row));
+}
+
+function saveUpdate(singleTodo, todoArray, target) {
+  const title = document.getElementById("update-title").value;
+  const desctiption = document.getElementById("update-descrition").value;
+  const status = document.getElementById("status-update").value;
+
+  singleTodo.title = title;
+  singleTodo.description = desctiption;
+  singleTodo.status = status;
+
+  target.cells[0].innerHTML = title;
+  target.cells[1].innerHTML = desctiption;
+  target.cells[2].innerHTML = status;
+
+  localStorage.setItem("todos", JSON.stringify(todoArray));
+
+  const containerUpdate = document.getElementById("container-update");
+  containerUpdate.style.display = "none";
+}
+
+function deleteTodo(event, id, todoArray) {
+  const row = event.target.parentElement.parentElement;
+  row.parentNode.removeChild(row);
+
+  const filteredArray = todoArray.filter((todo) => todo.id !== id);
+  localStorage.setItem("todos", JSON.stringify(filteredArray));
 }
